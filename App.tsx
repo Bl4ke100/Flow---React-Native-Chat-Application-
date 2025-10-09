@@ -6,12 +6,14 @@ import SignUpScreen from './src/screens/SignUp';
 import HomeScreen from './src/screens/Home';
 import ProfileScreen from './src/screens/Profile';
 import SettingsScreen from './src/screens/Settings';
+import ContactScreen from './src/screens/Contact';
 import { ThemeProvider } from './src/theme/ThemeProvider';
 
 export type RootStackParamList = {
   Splash: undefined;
-  SignIn: undefined;
   SignUp: undefined;
+  Contact: undefined;
+  SignIn: undefined;
   Home: undefined;
   Profile: undefined;
   Settings: undefined;
@@ -24,13 +26,14 @@ export default function App() {
   return (
     <ThemeProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Splash' screenOptions={{ animation: 'slide_from_right' }}>
+        <Stack.Navigator initialRouteName='Contact' screenOptions={{ animation: 'slide_from_right' }}>
           <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
           <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
           <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
