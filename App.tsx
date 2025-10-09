@@ -8,11 +8,13 @@ import ProfileScreen from './src/screens/Profile';
 import SettingsScreen from './src/screens/Settings';
 import ContactScreen from './src/screens/Contact';
 import { ThemeProvider } from './src/theme/ThemeProvider';
+import AvatarScreen from './src/screens/Avatar';
 
 export type RootStackParamList = {
   Splash: undefined;
   SignUp: undefined;
   Contact: undefined;
+  Avatar: undefined;
   SignIn: undefined;
   Home: undefined;
   Profile: undefined;
@@ -34,6 +36,7 @@ export default function App() {
           <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Avatar" component={AvatarScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
