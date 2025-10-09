@@ -4,10 +4,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AlertNotificationRoot } from "react-native-alert-notification";
 import { useTheme } from "../theme/ThemeProvider";
 import { FloatingLabelInput } from "react-native-floating-label-input";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../App";
+import { useNavigation } from "@react-navigation/native";
+
+type SignUpProps = NativeStackNavigationProp<RootStackParamList, 'SignUp'>;
 
 
 export default function SignUpScreen() {
 
+    const navigation = useNavigation<SignUpProps>();
+    
     const { applied } = useTheme();
     const logo =
         applied === 'dark'
@@ -38,8 +45,13 @@ export default function SignUpScreen() {
                             />
                         </View>
 
-                        <Pressable className="w-full h-12 bg-black dark:bg-white rounded-xl justify-center items-center ">
+                        <Pressable className="w-full h-12 bg-black dark:bg-white rounded-xl justify-center items-center"
+                        onPress={() => navigation.navigate('Contact')}
+                        >
                             <Text className="text-white dark:text-black font-bold">Continue</Text>
+                        </Pressable>
+                        <Pressable className="w-full h-12 justify-center items-center ">
+                            <Text className="text-black dark:text-white font-bold">Already have an account? Sign In</Text>
                         </Pressable>
 
                     </View>

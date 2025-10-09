@@ -28,7 +28,7 @@ export default function App() {
   return (
     <ThemeProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Contact' screenOptions={{ animation: 'slide_from_right' }}>
+        <Stack.Navigator initialRouteName='Splash' screenOptions={{ animation: 'slide_from_right' }}>
           <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
           <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
           <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />

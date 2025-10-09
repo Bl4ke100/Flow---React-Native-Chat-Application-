@@ -47,12 +47,12 @@ export default function ContactScreen() {
                             onPress={() => {setShow(true)}}
                         >
                             <Text className="text-white dark:text-black font-bold">
-                                &nbsp;&nbsp; {countryCode?.dial_code} &nbsp;
+                                &nbsp;&nbsp; {countryCode?.dial_code ? countryCode.dial_code : "+94"} &nbsp;
                                 <AntDesign name="caret-down" size={14} color={applied === 'dark' ? 'black' : 'white'} />
                                 &nbsp;
                             </Text>
                         </Pressable>
-                        <TextInput inputMode="tel" className="w-8/12 h-12 border border-black dark:border-white rounded-xl px-4 placeholder:text-gray-400" placeholder="Phone Number" />
+                        <TextInput inputMode="tel" className="w-8/12 h-12 border border-black dark:border-white rounded-xl px-4 placeholder:text-gray-400 text-white font-bold" placeholder="Phone Number" />
                     </View>
 
                     <View className="justify-center items-center px-8 mt-4">
@@ -78,7 +78,7 @@ export default function ContactScreen() {
 
                     <View className="w-full px-8 mt-4 flex-row gap-2">
                         <Pressable className="w-full h-12 bg-black dark:bg-white rounded-xl justify-center items-center border border-black dark:border-white"
-                            onPress={() => navigation.replace("Avatar")}
+                            onPress={() => navigation.navigate("Avatar")}
                         >
                             <Text className="text-white dark:text-black font-bold">
                                 Continue
