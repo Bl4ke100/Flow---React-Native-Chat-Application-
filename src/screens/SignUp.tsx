@@ -1,9 +1,8 @@
 import { Image, KeyboardAvoidingView, Pressable, StatusBar, Text, TextInput, View } from "react-native";
 import "../../global.css";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AlertNotificationRoot } from "react-native-alert-notification";
+import { ALERT_TYPE, AlertNotificationRoot, Dialog } from "react-native-alert-notification";
 import { useTheme } from "../theme/ThemeProvider";
-import { FloatingLabelInput } from "react-native-floating-label-input";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 import { useNavigation } from "@react-navigation/native";
@@ -29,7 +28,7 @@ export default function SignUpScreen() {
     const [lastName, setLastName] = useState('');
 
     return (
-        <AlertNotificationRoot>
+        <AlertNotificationRoot theme={applied === 'dark' ? 'dark' : 'light'}>
             <KeyboardAvoidingView behavior="padding" className="flex-1 justify-center items-center bg-white dark:bg-black">
                 <SafeAreaView className="flex-1 justify-center items-center w-full px-8 bottom-7">
                     <StatusBar hidden={true} />
@@ -42,6 +41,7 @@ export default function SignUpScreen() {
                             <TextInput inputMode="text" className="w-full text-lg h-14 border border-black dark:border-white rounded-xl px-4 placeholder:text-gray-400 text-black dark:text-white font-bold" placeholder="First Name"
                                 value={userData.firstName}
                                 onChangeText={(text) => {
+                                    setFirstName(text);
                                     setUserData((previous) => ({
                                         ...previous,
                                         firstName: text
@@ -54,6 +54,7 @@ export default function SignUpScreen() {
                             <TextInput inputMode="text" className="w-full text-lg h-14 border border-black dark:border-white rounded-xl px-4 placeholder:text-gray-400 text-black dark:text-white font-bold" placeholder="Last Name"
                                 value={userData.lastName}
                                 onChangeText={(text) => {
+                                    setLastName(text);
                                     setUserData((previous) => ({
                                         ...previous,
                                         lastName: text
@@ -66,6 +67,24 @@ export default function SignUpScreen() {
                             onPress={() => {
                                 let validFirstName = validateFirstName(firstName);
                                 let validLastName = validateLastName(lastName);
+                                if(validFirstName){
+                                    Dialog.show({
+                                        type: ALERT_TYPE.DANGER,
+                                        title: 'Error',
+                                        textBody: validFirstName,
+                                        button: 'Close',
+                                        
+                                    });
+                                }else if(validLastName){
+                                    Dialog.show({
+                                        type: ALERT_TYPE.DANGER,
+                                        title: 'Error',
+                                        textBody: validLastName,
+                                        button: 'Close',
+                                    });
+                                }else{
+                                    navigation.navigate('Contact');
+                                }
                             }}
                         >
                             <Text className="text-white dark:text-black font-bold">Continue</Text>

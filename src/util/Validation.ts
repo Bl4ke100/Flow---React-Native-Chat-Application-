@@ -13,7 +13,7 @@ export const validateLastName = (name: string): string | null => {
 }
 
 export const validatePhoneNumber = (phone: string): string | null => {
-    const phoneRegex = /^[1-9][0-9]{9,15}$/;
+    const phoneRegex = /^[1-9][0-9]{8,15}$/;
     if(!phone){
         return "Please enter a phone number!";
     }
@@ -35,19 +35,16 @@ export const validateCountryCode = (code: string): string | null => {
     return null;
 }
 
+// Inside src/util/Validation.ts
 export const validateProfileImage = (image: {
     uri: string;
     type?: string;
     fileSize?: number;
 }): string | null => {
-    if(!image){
+    // FIX: Check if uri is an empty string, which is what 'image ?? ""' passes when 'image' is null
+    if (!image || image.uri.trim().length === 0){
         return "Please select a profile image or an avatar!";
     }
-    if(!image.uri){
-        return "Please provide a URI for the profile image!";
-    }
-    if(image.fileSize && image.fileSize > 5 * 1024 * 1024){
-        return "Profile image file size must be less than 5MB!";
-    }
+    // ... rest of your validation for type and file size
     return null;
 }

@@ -5,8 +5,15 @@ import "../../global.css";
 import { useState } from "react";
 import { useTheme } from "../theme/ThemeProvider";
 import { useUserRegistration } from "../components/UserContext";
+import { ALERT_TYPE, AlertNotificationRoot, Dialog } from "react-native-alert-notification";
+import { validateProfileImage } from "../util/Validation";
+import { useNavigation } from "@react-navigation/native";
+
+type AvatarProps = any;
 
 export default function AvatarScreen() {
+
+    const navigation = useNavigation<AvatarProps>();
 
     const { applied } = useTheme();
     const logo =
@@ -43,76 +50,102 @@ export default function AvatarScreen() {
 
     const { userData, setUserData } = useUserRegistration();
 
+    const handleAvatarSelection = (item: any) => {
+        const uri = Image.resolveAssetSource(item).uri;
+        setImage(uri);
+        setUserData((previous) => ({
+            ...previous,
+            profileImage: uri
+        }));
+    };
+
+    const handleCreateAccount = () => {
+
+    };
+
+
     return (
         <SafeAreaView className="flex-1 bg-white dark:bg-black">
-            <StatusBar hidden={true} />
+            <AlertNotificationRoot theme={applied === 'dark' ? 'dark' : 'light'}>
 
-            <View className="flex-1 w-full items-center pt-10 mt-11">
+                <StatusBar hidden={true} />
 
-                <View className="items-center px-8 top-10">
-                    <Image source={logo} className="w-32 h-32 ml-8 mb-8" />
-                    <Text className="text-black dark:text-white text-xl font-bold text-center">
-                        Add a profile picture
-                    </Text>
-                    <Pressable
-                        className="w-40 h-40 bg-gray-200 dark:bg-gray-800 rounded-full justify-center items-center my-5"
-                        onPress={pickImage}
-                    >
-                        {image ? (
-                            <Image source={{ uri: image }} className="w-40 h-40 rounded-full" />
-                        ) : (
-                            <View className="w-40 h-40 bg-gray-200 dark:bg-gray-800 rounded-full justify-center items-center">
-                                <Text className="text-gray-500 dark:text-gray-400 text-xl font-bold">+</Text>
-                                <Text className="text-gray-500 dark:text-gray-400 text-lg font-semibold">Upload</Text>
-                            </View>
-                        )}
-                    </Pressable>
-                    <Text className="text-black dark:text-white text-lg font-semibold text-center">
-                        or
-                    </Text>
-                    <Text className="text-black dark:text-white text-lg font-semibold text-center">
-                        Choose an Avatar
-                    </Text>
+                <View className="flex-1 w-full items-center pt-10 mt-11">
+
+                    <View className="items-center px-8 top-10">
+                        <Image source={logo} className="w-32 h-32 ml-8 mb-8" />
+                        <Text className="text-black dark:text-white text-xl font-bold text-center">
+                            Add a profile picture
+                        </Text>
+                        <Pressable
+                            className="w-40 h-40 bg-gray-200 dark:bg-gray-800 rounded-full justify-center items-center my-5"
+                            onPress={pickImage}
+                        >
+                            {image ? (
+                                <Image source={{ uri: image }} className="w-40 h-40 rounded-full" />
+                            ) : (
+                                <View className="w-40 h-40 bg-gray-200 dark:bg-gray-800 rounded-full justify-center items-center">
+                                    <Text className="text-gray-500 dark:text-gray-400 text-xl font-bold">+</Text>
+                                    <Text className="text-gray-500 dark:text-gray-400 text-lg font-semibold">Upload</Text>
+                                </View>
+                            )}
+                        </Pressable>
+                        <Text className="text-black dark:text-white text-lg font-semibold text-center">
+                            or
+                        </Text>
+                        <Text className="text-black dark:text-white text-lg font-semibold text-center">
+                            Choose an Avatar
+                        </Text>
+                    </View>
+
+                    <View className="flex-1 w-full my-5 bottom-11">
+                        <FlatList
+                            data={avatars}
+                            horizontal
+                            keyExtractor={(_, index) => index.toString()}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity onPress={() => handleAvatarSelection(item)}>
+                                    <Image source={item} className="w-20 h-20 rounded-full mx-2" />
+                                </TouchableOpacity>
+                            )}
+                            contentContainerStyle={{ paddingHorizontal: 10, alignItems: 'center' }}
+                            showsHorizontalScrollIndicator={false}
+                        />
+                    </View>
+
+                    <View className="w-full px-8 mb-8">
+                        <Pressable className="w-full h-12 bg-black dark:bg-white rounded-xl justify-center items-center"
+                            onPress={() => {
+                                const validationObject = {
+                                    uri: image ?? '',
+                                    type: undefined,
+                                    fileSize: undefined
+                                };
+
+                                const profileImageError = validateProfileImage(validationObject);
+
+                                if (profileImageError) {
+                                    Dialog.show({
+                                        type: ALERT_TYPE.DANGER,
+                                        title: 'Error',
+                                        textBody: profileImageError,
+                                        button: 'Close',
+                                    });
+                                } else {
+                                    setUserData((previous) => ({
+                                        ...previous,
+                                        profileImage: image
+                                    }));
+                                    navigation.navigate('Home');
+                                }
+                            }}
+                        >
+                            <Text className="text-white dark:text-black font-bold">Create Account</Text>
+                        </Pressable>
+                    </View>
+
                 </View>
-
-                <View className="flex-1 w-full my-5 bottom-11">
-                    <FlatList
-                        data={avatars}
-                        horizontal
-                        keyExtractor={(_, index) => index.toString()}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity onPress={() => {
-                                setImage(Image.resolveAssetSource(item).uri);
-                                setUserData((previous) => ({
-                                    ...previous,
-                                    profileImage: Image.resolveAssetSource(item).uri
-                                }));
-                                console.log(userData);
-                            }}>
-                                <Image source={item} className="w-20 h-20 rounded-full mx-2" />
-                            </TouchableOpacity>
-                        )}
-                        contentContainerStyle={{ paddingHorizontal: 10, alignItems: 'center' }}
-                        showsHorizontalScrollIndicator={false}
-
-                    />
-                </View>
-
-                <View className="w-full px-8 mb-8">
-                    <Pressable className="w-full h-12 bg-black dark:bg-white rounded-xl justify-center items-center"
-                        onPress={() => {
-                            setUserData((previous) => ({
-                                ...previous,
-                                profileImage: image
-                            }));
-                            console.log(userData);
-                        }}
-                    >
-                        <Text className="text-white dark:text-black font-bold">Create Account</Text>
-                    </Pressable>
-                </View>
-
-            </View>
+            </AlertNotificationRoot>
         </SafeAreaView>
     );
 }
