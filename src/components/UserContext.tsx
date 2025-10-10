@@ -20,7 +20,7 @@ export const UserRegistrationProvider : React.FC<{children: ReactNode}> = ({chil
         firstName: '',
         lastName: '',
         phoneNumber: '',
-        countryCode: '',
+        countryCode: '+94',
         profileImage: null,
     });
 

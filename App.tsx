@@ -9,6 +9,7 @@ import SettingsScreen from './src/screens/Settings';
 import ContactScreen from './src/screens/Contact';
 import { ThemeProvider } from './src/theme/ThemeProvider';
 import AvatarScreen from './src/screens/Avatar';
+import { UserRegistrationProvider } from './src/components/UserContext';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -27,18 +28,20 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName='Splash' screenOptions={{ animation: 'slide_from_right' }}>
-          <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Avatar" component={AvatarScreen} options={{ headerShown: false }} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <UserRegistrationProvider>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName='Splash' screenOptions={{ animation: 'fade' }}>
+            <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Avatar" component={AvatarScreen} options={{ headerShown: false }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </UserRegistrationProvider>
     </ThemeProvider>
   );
 }

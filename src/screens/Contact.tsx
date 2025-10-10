@@ -8,6 +8,7 @@ import { CountryItem, CountryPicker } from "react-native-country-codes-picker";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 import { useNavigation } from "@react-navigation/native";
+import { useUserRegistration } from "../components/UserContext";
 
 type ContactProps = NativeStackNavigationProp<RootStackParamList, "Contact">;
 
@@ -16,7 +17,7 @@ export default function ContactScreen() {
     const navigation = useNavigation<ContactProps>();
 
     const [show, setShow] = useState(false);
-    const [countryCode, setCountryCode] = useState<CountryItem | null>(null);
+    const [countryCode, setCountryCode] = useState<CountryItem | string>("+94");
 
     const { applied } = useTheme();
     const logo =
@@ -24,44 +25,56 @@ export default function ContactScreen() {
             ? require("../../assets/logo/Flow_Logo_White.png")
             : require("../../assets/logo/Flow_Logo_Black.png");
 
+    const { userData, setUserData } = useUserRegistration();
+
     return (
 
         <SafeAreaView className="flex-1 justify-center items-center bg-white dark:bg-black">
             <StatusBar hidden={true} />
             <KeyboardAvoidingView behavior="padding" className="flex-1 justify-center items-center">
 
-                <View className="justify-center items-center bottom-5">
+                <View className="justify-center items-center bottom-6">
                     <View>
                         <Image source={logo} className="w-32 h-32 ml-8 mb-8" />
                     </View>
-                    <View className="justify-center items-center px-8">
-                        <Text className="text-black dark:text-white text-md text-center">We use your contacts to help you find friends who are already using Flow.</Text>
-                    </View>
                     
+
                     <View>
                         <Text className="text-black dark:text-white text-md text-center mt-4 font-bold">Please enter your phone number.</Text>
                     </View>
-                    
-                    <View className="w-full px-8 mt-4 flex-row gap-2">
+
+                    <View className="w-full px-8 mt-6 flex-row gap-2">
                         <Pressable className="w-4/12 h-12 bg-black dark:bg-white rounded-xl justify-center items-center border border-black dark:border-white"
-                            onPress={() => {setShow(true)}}
+                            onPress={() => { setShow(true) }}
                         >
                             <Text className="text-white dark:text-black font-bold">
-                                &nbsp;&nbsp; {countryCode?.dial_code ? countryCode.dial_code : "+94"} &nbsp;
+                                &nbsp;&nbsp; {countryCode?.dial_code ? countryCode.dial_code : userData.countryCode ? userData.countryCode : "Code"} &nbsp;
                                 <AntDesign name="caret-down" size={14} color={applied === 'dark' ? 'black' : 'white'} />
                                 &nbsp;
                             </Text>
                         </Pressable>
-                        <TextInput inputMode="tel" className="w-8/12 h-12 border border-black dark:border-white rounded-xl px-4 placeholder:text-gray-400 text-white font-bold" placeholder="Phone Number" />
+                        <TextInput inputMode="tel" className="w-8/12 h-12 border border-black dark:border-white rounded-xl px-4 placeholder:text-gray-400 text-white font-bold" placeholder="71 ### ####" 
+                            value={userData.phoneNumber}
+                            onChangeText={(text)=>{
+                                setUserData((previous)=>({
+                                    ...previous,
+                                    phoneNumber: text
+                                }));
+                            }}
+                        />
                     </View>
 
                     <View className="justify-center items-center px-8 mt-4">
-                        <CountryPicker 
+                        <CountryPicker
                             show={show}
                             lang={"en"}
                             pickerButtonOnPress={(item) => {
                                 setCountryCode(item);
                                 setShow(false);
+                                setUserData((previous) => ({
+                                    ...previous,
+                                    countryCode: item.dial_code
+                                }));
                             }}
                             onBackdropPress={() => setShow(false)}
                             style={{
@@ -71,7 +84,7 @@ export default function ContactScreen() {
                                     alignSelf: 'center',
                                     borderRadius: 10
                                 },
-                                
+
                             }}
                         />
                     </View>

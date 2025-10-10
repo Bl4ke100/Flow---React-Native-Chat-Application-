@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import "../../global.css";
 import { useState } from "react";
 import { useTheme } from "../theme/ThemeProvider";
+import { useUserRegistration } from "../components/UserContext";
 
 export default function AvatarScreen() {
 
@@ -39,6 +40,8 @@ export default function AvatarScreen() {
         require("../../assets/avatars/avatar_8.png"),
         require("../../assets/avatars/avatar_9.png"),
     ];
+
+    const { userData, setUserData } = useUserRegistration();
 
     return (
         <SafeAreaView className="flex-1 bg-white dark:bg-black">
@@ -78,17 +81,33 @@ export default function AvatarScreen() {
                         horizontal
                         keyExtractor={(_, index) => index.toString()}
                         renderItem={({ item }) => (
-                            <TouchableOpacity onPress={() => setImage(Image.resolveAssetSource(item).uri)}>
+                            <TouchableOpacity onPress={() => {
+                                setImage(Image.resolveAssetSource(item).uri);
+                                setUserData((previous) => ({
+                                    ...previous,
+                                    profileImage: Image.resolveAssetSource(item).uri
+                                }));
+                                console.log(userData);
+                            }}>
                                 <Image source={item} className="w-20 h-20 rounded-full mx-2" />
                             </TouchableOpacity>
                         )}
                         contentContainerStyle={{ paddingHorizontal: 10, alignItems: 'center' }}
                         showsHorizontalScrollIndicator={false}
+
                     />
                 </View>
 
                 <View className="w-full px-8 mb-8">
-                    <Pressable className="w-full h-12 bg-black dark:bg-white rounded-xl justify-center items-center">
+                    <Pressable className="w-full h-12 bg-black dark:bg-white rounded-xl justify-center items-center"
+                        onPress={() => {
+                            setUserData((previous) => ({
+                                ...previous,
+                                profileImage: image
+                            }));
+                            console.log(userData);
+                        }}
+                    >
                         <Text className="text-white dark:text-black font-bold">Create Account</Text>
                     </Pressable>
                 </View>
