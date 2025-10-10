@@ -46,9 +46,9 @@ export default function AvatarScreen() {
 
             <View className="flex-1 w-full items-center pt-10 mt-11">
 
-                <View className="items-center px-8">
-                    <Image source={logo} className="w-32 h-32 mb-10" />
-                    <Text className="text-black dark:text-white text-xl font-semibold text-center">
+                <View className="items-center px-8 top-10">
+                    <Image source={logo} className="w-32 h-32 ml-8 mb-8" />
+                    <Text className="text-black dark:text-white text-xl font-bold text-center">
                         Add a profile picture
                     </Text>
                     <Pressable
@@ -68,7 +68,7 @@ export default function AvatarScreen() {
                         or
                     </Text>
                     <Text className="text-black dark:text-white text-lg font-semibold text-center">
-                        Choose an avatar
+                        Choose an Avatar
                     </Text>
                 </View>
 
@@ -87,7 +87,7 @@ export default function AvatarScreen() {
                     />
                 </View>
 
-                <View className="w-full px-8 mb-4">
+                <View className="w-full px-8 mb-8">
                     <Pressable className="w-full h-12 bg-black dark:bg-white rounded-xl justify-center items-center">
                         <Text className="text-white dark:text-black font-bold">Create Account</Text>
                     </Pressable>
