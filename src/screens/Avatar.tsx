@@ -140,9 +140,12 @@ export default function AvatarScreen() {
                                         ...previous,
                                         profileImage: image
                                     }));
+                                    console.log("userData");
+                                    console.log(userData);
                                     try {
                                         setLoading(true);
                                         const response = await createNewAccount(userData);
+                                        console.log(response);
                                         if (response.status) {
                                             Dialog.show({
                                                 type: ALERT_TYPE.SUCCESS,

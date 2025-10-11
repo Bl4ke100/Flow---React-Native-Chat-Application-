@@ -78,7 +78,7 @@ export const WebSocketProvider: React.FC<{
 export const useWebSocket = () => {
   const ctx = useContext(WebSocketContext);
   if (!ctx) {
-    throw new Error("useWebScoket must be used inside WebSocketProvider");
+    throw new Error("useWebSocket must be used inside WebSocketProvider");
   }
   return ctx;
 };
