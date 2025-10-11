@@ -10,6 +10,8 @@ import ContactScreen from './src/screens/Contact';
 import { ThemeProvider } from './src/theme/ThemeProvider';
 import AvatarScreen from './src/screens/Avatar';
 import { UserRegistrationProvider } from './src/components/UserContext';
+import HomeTabs from './src/screens/HomeTabs';
+import SingleChatScreen from './src/screens/SingleChat';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -20,6 +22,12 @@ export type RootStackParamList = {
   Home: undefined;
   Profile: undefined;
   Settings: undefined;
+  SingleChat:{
+    chatId: string;
+    chatName: string;
+    lastSeenTime: string;
+    profileImage: string;
+  };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -34,11 +42,11 @@ export default function App() {
             <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
             <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
             <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Home" component={HomeTabs} options={{ headerShown: false }} />
             <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Avatar" component={AvatarScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="SingleChat" component={SingleChatScreen} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
       </UserRegistrationProvider>

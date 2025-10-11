@@ -150,7 +150,7 @@ export default function AvatarScreen() {
                                                 textBody: 'Account created successfully!',
                                                 button: 'Continue',
                                                 onPressButton() {
-                                                    navigation.replace('Home');
+                                                    navigation.navigate('Home');
                                                 },
                                             });
                                         } else {
