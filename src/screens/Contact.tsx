@@ -59,7 +59,7 @@ export default function ContactScreen() {
                                     &nbsp;
                                 </Text>
                             </Pressable>
-                            <TextInput inputMode="tel" className="w-8/12 h-12 border border-black dark:border-white rounded-xl px-4 placeholder:text-gray-400 text-white font-bold" placeholder="71 ### ####"
+                            <TextInput inputMode="tel" className="w-8/12 h-12 border border-black dark:border-white rounded-xl px-4 placeholder:text-gray-400 text-black dark:text-white font-bold" placeholder="71 ### ####"
                                 value={userData.phoneNumber}
                                 onChangeText={(text) => {
                                     setUserData((previous) => ({

@@ -1,15 +1,19 @@
-import { FlatList, Image, Pressable, StatusBar, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, Image, Pressable, StatusBar, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from 'expo-image-picker';
 import "../../global.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useTheme } from "../theme/ThemeProvider";
 import { useUserRegistration } from "../components/UserContext";
 import { ALERT_TYPE, AlertNotificationRoot, Dialog } from "react-native-alert-notification";
 import { validateProfileImage } from "../util/Validation";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../App";
+import { AuthContext } from "../components/AuthProvider";
+import { createNewAccount } from "../api/UserService";
 
-type AvatarProps = any;
+type AvatarProps = NativeStackNavigationProp<RootStackParamList, "Avatar">;
 
 export default function AvatarScreen() {
 
@@ -59,9 +63,9 @@ export default function AvatarScreen() {
         }));
     };
 
-    const handleCreateAccount = () => {
+    const [loading, setLoading] = useState(false);
+    const auth = useContext(AuthContext);
 
-    };
 
 
     return (
@@ -115,20 +119,20 @@ export default function AvatarScreen() {
 
                     <View className="w-full px-8 mb-8">
                         <Pressable className="w-full h-12 bg-black dark:bg-white rounded-xl justify-center items-center"
-                            onPress={() => {
+                            onPress={async () => {
                                 const validationObject = {
                                     uri: image ?? '',
                                     type: undefined,
                                     fileSize: undefined
                                 };
 
-                                const profileImageError = validateProfileImage(validationObject);
+                                const validProfileImage = validateProfileImage(validationObject);
 
-                                if (profileImageError) {
+                                if (validProfileImage) {
                                     Dialog.show({
                                         type: ALERT_TYPE.DANGER,
                                         title: 'Error',
-                                        textBody: profileImageError,
+                                        textBody: validProfileImage,
                                         button: 'Close',
                                     });
                                 } else {
@@ -136,11 +140,44 @@ export default function AvatarScreen() {
                                         ...previous,
                                         profileImage: image
                                     }));
-                                    navigation.navigate('Home');
+                                    try {
+                                        setLoading(true);
+                                        const response = await createNewAccount(userData);
+                                        if (response.status) {
+                                            Dialog.show({
+                                                type: ALERT_TYPE.SUCCESS,
+                                                title: 'Success',
+                                                textBody: 'Account created successfully!',
+                                                button: 'Continue',
+                                                onPressButton() {
+                                                    navigation.replace('Home');
+                                                },
+                                            });
+                                        } else {
+                                            Dialog.show({
+                                                type: ALERT_TYPE.DANGER,
+                                                title: 'Error',
+                                                textBody: response.message,
+                                                button: 'Close',
+                                            });
+                                        }
+                                        console.log(response);
+                                    } catch (error) {
+
+                                    } finally {
+                                        setLoading(false);
+                                    }
+
+
                                 }
                             }}
                         >
-                            <Text className="text-white dark:text-black font-bold">Create Account</Text>
+                            {loading ? (
+                                <ActivityIndicator size="small" color="#B2BEB5" />
+                            ) : (
+                                <Text className="text-white dark:text-black font-bold">Create Account</Text>
+                            )
+                            }
                         </Pressable>
                     </View>
 

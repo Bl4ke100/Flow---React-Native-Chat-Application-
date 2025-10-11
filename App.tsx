@@ -30,7 +30,7 @@ export default function App() {
     <ThemeProvider>
       <UserRegistrationProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName='Splash' screenOptions={{ animation: 'fade' }}>
+          <Stack.Navigator initialRouteName='Home' screenOptions={{ animation: 'fade' }}>
             <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
             <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
             <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
