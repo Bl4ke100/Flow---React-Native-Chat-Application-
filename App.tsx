@@ -1,6 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SplashScreen from './src/screens/splash';
 import SignInScreen from './src/screens/SignIn';
 import SignUpScreen from './src/screens/SignUp';
 import HomeScreen from './src/screens/Home';
@@ -16,7 +15,7 @@ import NewChatScreen from './src/screens/NewChat';
 import { WebSocketProvider } from './src/socket/WebSocketProvider';
 import { useContext } from 'react';
 import { AuthContext } from './src/components/AuthProvider';
-import NewContactScreen from './src/screens/NewContactScreen';
+import SplashScreen from './src/screens/Splash';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -28,11 +27,10 @@ export type RootStackParamList = {
   Profile: undefined;
   Settings: undefined;
   NewChat: undefined;
-  NewContact: undefined;
   SingleChat: {
     chatId: number;
-    friendName: string;
-    lastSeenTime: string;
+    chatName: string;
+    lastTime: string;
     profileImage: string;
   };
 };
@@ -50,7 +48,7 @@ export default function App() {
       <ThemeProvider>
         <UserRegistrationProvider>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName='Splash' screenOptions={{ animation: 'fade' }}>
+            <Stack.Navigator initialRouteName='SingleChat' screenOptions={{ animation: 'fade' }}>
               <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
               <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
               <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
@@ -61,7 +59,6 @@ export default function App() {
               <Stack.Screen name="SingleChat" component={SingleChatScreen} options={{ headerShown: false }} />
               <Stack.Screen name="NewChat" component={NewChatScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Avatar" component={AvatarScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="NewContact" component={NewContactScreen} options={{ headerShown: false }} />
             </Stack.Navigator>
           </NavigationContainer>
         </UserRegistrationProvider>

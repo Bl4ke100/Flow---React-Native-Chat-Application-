@@ -1,155 +1,141 @@
-import {
-  NativeStackNavigationProp,
-  NativeStackScreenProps,
-} from "@react-navigation/native-stack";
-import {
-  FlatList,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  StatusBar,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { FlatList, Image, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../../App";
-import { useNavigation, useRoute } from "@react-navigation/native";
 import { useLayoutEffect, useState } from "react";
+import { useTheme } from "../theme/ThemeProvider";
 import { Ionicons } from "@expo/vector-icons";
-import { useSingleChat } from "../socket/UseSingleChat";
-import { Chat } from "../socket/chat";
-import { formatChatTime } from "../util/DateFormatter";
-import { useSendChat } from "../socket/UseSendChat";
 
-type SingleChatScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  "SingleChat"
->;
-export default function SingleChatScreen({
-  route,
-  navigation,
-}: SingleChatScreenProps) {
-  const { chatId, friendName, lastSeenTime, profileImage } = route.params;
-  const singleChat = useSingleChat(chatId); // chatId == friendId
-  const messages = singleChat.messages;
-  const friend = singleChat.friend;
-  const sendMessage = useSendChat();
-  const [input, setInput] = useState("");
+type Message = {
+  id: number;
+  text: string;
+  sender: "me" | "friend";
+  title: string;
+  time: string;
+  status: "sent" | "delivered" | "read";
+};
+
+const dummyMessages: Message[] = [
+];
+
+type singleChatScreenProps = NativeStackNavigationProp<RootStackParamList, 'SingleChat'>;
+
+export default function SingleChatScreen() {
+
+  const navigation = useNavigation<singleChatScreenProps>();
+
+  const [message, setMessage] = useState<Message[]>([
+    { id: 1, text: "Hello!", sender: "me", title: "New Message", time: "10:00 AM", status: "sent" },
+    { id: 2, text: "Hi there!", sender: "friend", title: "Reply", time: "10:01 AM", status: "sent" },
+    { id: 3, text: "How are you?", sender: "me", title: "New Message", time: "10:02 AM", status: "delivered" },
+    { id: 4, text: "I'm good, thanks!", sender: "friend", title: "Reply", time: "10:03 AM", status: "delivered" },
+    { id: 5, text: "What about you?", sender: "friend", title: "Reply", time: "10:04 AM", status: "read" },
+    { id: 6, text: "Doing well!", sender: "me", title: "New Message", time: "10:05 AM", status: "read" },
+    { id: 7, text: "Great to hear!", sender: "friend", title: "Reply", time: "10:06 AM", status: "read" },
+    { id: 8, text: "How is Anne doing?", sender: "me", title: "New Message", time: "10:07 AM", status: "read" },
+    { id: 9, text: "She's fine, thanks for asking!", sender: "friend", title: "Reply", time: "10:08 AM", status: "read" },
+    { id: 10, text: "Are you sure?", sender: "me", title: "New Message", time: "10:09 AM", status: "sent" },
+    { id: 11, text: "Yes", sender: "friend", title: "Reply", time: "10:10 AM", status: "delivered" },
+    { id: 12, text: "How are you so sure?", sender: "me", title: "New Message", time: "10:11 AM", status: "read" },
+    { id: 13, text: "Because I spoke to her yesterday.", sender: "friend", title: "Reply", time: "10:12 AM", status: "read" },
+    { id: 14, text: "Oh, that's good to know.", sender: "me", title: "New Message", time: "10:13 AM", status: "read" },
+    { id: 15, text: "Yes, indeed! So, Now shut your butch as up you nigga", sender: "friend", title: "Reply", time: "10:14 AM", status: "read" },
+    { id: 16, text: "Let's catch up sometime.", sender: "me", title: "New Message", time: "10:15 AM", status: "sent" },
+    { id: 17, text: "Sure, looking forward to it!", sender: "friend", title: "Reply", time: "10:16 AM", status: "delivered" },
+    { id: 18, text: "Great!", sender: "me", title: "New Message", time: "10:17 AM", status: "read" },
+    { id: 19, text: "See you soon.", sender: "friend", title: "Reply", time: "10:18 AM", status: "read" },
+    { id: 20, text: "Bye!", sender: "me", title: "New Message", time: "10:19 AM", status: "read" },
+
+
+  ]);
+
+  const [input, setInput] = useState<string>("");
+
+  const { applied } = useTheme();
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerShown: true,
       title: "",
       headerLeft: () => (
-        <View className="flex-row items-center gap-2">
-          <TouchableOpacity
-            className="justify-center items-center"
-            onPress={() => {
-              navigation.goBack();
-            }}
-          >
-            <Ionicons name="arrow-back-sharp" size={24} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity className="h-14 w-14 rounded-full border-1 border-gray-300 justify-center items-center">
-            <Image
-              source={{ uri: profileImage }}
-              className="h-14 w-14 rounded-full"
-            />
-          </TouchableOpacity>
-          <View className="space-y-2 ">
-            <Text className="font-bold text-2xl">
-              {friend ? friend.firstName + " " + friend.lastName : friendName}
-            </Text>
-            <Text className="italic text-xs font-bold text-gray-500">
-              {friend?.status === "ONLINE"
-                ? "Online"
-                : `Last seen ${formatChatTime(friend?.updatedAt ?? "")}`}
-            </Text>
+        <View className="justify-center items-center flex-row mb-4">
+          <Image source={require("../../assets/avatars/avatar_1.png")} className="w-14 h-14 rounded-full ml-2" />
+          <View className="ml-2">
+            <Text className={`text-lg font-bold ${applied === 'dark' ? 'text-white' : 'text-black'}`}>John Doe</Text>
+            <Text className={`text-sm ${applied === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>Online</Text>
           </View>
         </View>
       ),
       headerRight: () => (
         <TouchableOpacity>
-          <Ionicons name="ellipsis-vertical" size={24} color="black" />
+          <Ionicons name="ellipsis-vertical" size={24} color={applied === 'dark' ? 'white' : 'black'} />
         </TouchableOpacity>
       ),
+      headerStyle: {
+        backgroundColor: applied === 'dark' ? '#0D0D0D' : '#DBDBDB',
+      },
     });
-  }, [navigation, friend]);
+  }, [navigation]);
 
-  const renderItem = ({ item }: { item: Chat }) => {
-    const isMe = item.from.id !== chatId;
+  const renderItem = ({ item }: { item: Message }) => {
+    const isMe = item.sender === "me";
     return (
-      <View
-        className={`my-1 px-3 py-2 max-w-[75%] ${
-          isMe
-            ? `self-end bg-green-900 rounded-tl-xl rounded-bl-xl rounded-br-xl`
-            : `rounded-tr-xl rounded-bl-xl rounded-br-xl self-start bg-gray-700`
+      <View className={`my-1 px-3 max-w[60%] ${isMe ? 'self-end bg-black dark:bg-white p-1 rounded-tl-xl rounded-bl-xl rounded-br-xl' : 'self-start bg-gray-300 p-1 rounded-tr-xl rounded-br-xl rounded-bl-xl'
         }`}
       >
-        <Text className={`text-white text-base`}>{item.message}</Text>
-        <View className="flex-row justify-end items-center mt-1">
-          <Text className={`text-white italic text-xs me-2`}>
-            {formatChatTime(item.createdAt)}
-          </Text>
-          {isMe && (
-            <Ionicons
-              name={
-                item.status === "READ"
-                  ? "checkmark-done-sharp"
-                  : item.status === "DELIVERED"
-                  ? "checkmark-done-sharp"
-                  : "checkmark"
-              }
-              size={20}
-              color={item.status === "READ" ? "#0284c7" : "#9ca3af"}
-            />
-          )}
-        </View>
+      <Text className={` ${isMe ? 'text-white dark:text-black' : 'text-black'} text-lg`}>{item.text}</Text>
+      <View className="flex-row justify-end">
+        <Text className={`${isMe ? 'text-white dark:text-black' : 'text-black'} text-xs`}>{item.time}</Text>
+        {isMe && (
+          <Ionicons
+            name={item.status === "sent" ? "checkmark-sharp" : item.status === "delivered" ? "checkmark-done-sharp" : "checkmark-done-sharp"}
+            size={12}
+            color={item.status === "read" ? "green" : isMe ? "black" : "white"}
+            className="ml-1"
+          />
+        )}
+      </View>
       </View>
     );
   };
 
-  const handleSendChat = () => {
-    if (!input.trim()) {
-      return;
+  const sendMessage = () => {
+    if (input.trim()){
+      const newMsg: Message = {
+        id:Date.now(),
+        text: input,
+        sender: "me",
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        status: "sent",
+        title: "New Message"
+      };
+      setMessage([newMsg, ...message]);
+      setInput("");
     }
-    sendMessage(chatId, input);
-    setInput("");
+    return !input.trim();
   };
 
   return (
-    <SafeAreaView
-      className="flex-1 bg-white"
-      edges={["right", "bottom", "left"]}
-    >
-      <StatusBar hidden={false} />
-      <KeyboardAvoidingView
-        className="flex-1"
-        keyboardVerticalOffset={Platform.OS === "android" ? 0 : 50}
-        behavior={Platform.OS === "android" ? "padding" : "height"}
-      >
+    <SafeAreaView className="flex-1 bg-white dark:bg-black" edges={['right', 'bottom', 'left']}>
+      <KeyboardAvoidingView behavior={Platform.OS === "android" ? "padding" : "height"} keyboardVerticalOffset={100} className="flex-1">
         <FlatList
-          data={messages} //Chat[]
+          data={message}
           renderItem={renderItem}
-          className="px-3 flex-1"
+          className="px-3"
+          keyExtractor={(item) => item.id.toString()}
           inverted
-          keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={{ paddingBottom: 60 }}
         />
-        <View className="flex-row items-end p-2 bg-white">
-          <TextInput
+        <View className={`flex-row items-center p-2 border-t ${applied === 'dark' ? 'border-gray-700' : 'border-gray-300'}`}>
+          <TextInput className={`flex-1 h-14 text-lg max-h-20 px-4 rounded-full ${applied === 'dark' ? 'bg-gray-800 text-white' : 'bg-gray-200 text-black'} placeholder:text-gray-500`}
+            placeholder="Type a message..."
             value={input}
-            onChangeText={(text) => setInput(text)}
-            multiline
-            placeholder="Type a message"
-            className="flex-1 min-h-14 max-h-32 h-auto px-5 py-2 bg-gray-200 rounded-3xl text-base"
+            onChangeText={(item) => setInput(item)}
           />
-          <TouchableOpacity
-            className="bg-green-600 w-14 h-14 items-center justify-center rounded-full"
-            onPress={handleSendChat}
-          >
-            <Ionicons name="send" size={24} color="white" />
+          <TouchableOpacity className="ml-2 bg-black dark:bg-white p-3 rounded-full h-12 w-12 justify-center items-center"
+            onPress={sendMessage}
+            disabled={input.trim() === ""}>
+            <Ionicons name="send" size={20} color={applied === 'dark' ? 'black' : 'white'} />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
