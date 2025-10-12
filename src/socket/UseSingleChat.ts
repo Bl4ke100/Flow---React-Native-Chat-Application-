@@ -16,6 +16,7 @@ export function useSingleChat(friendId: number) {
 
     const onMessage = (event: MessageEvent) => {
       const response: WSResponse = JSON.parse(event.data);
+      console.log("WebSocket Message:", response);
       if (response.type === "single_chat") {
         setMessage(response.payload);
       }

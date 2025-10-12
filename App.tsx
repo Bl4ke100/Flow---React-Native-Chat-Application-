@@ -16,8 +16,10 @@ import { WebSocketProvider } from './src/socket/WebSocketProvider';
 import { useContext } from 'react';
 import { AuthContext } from './src/components/AuthProvider';
 import SplashScreen from './src/screens/Splash';
+import StatusScreen from './src/screens/Status';
+import CallsScreen from './src/screens/Calls';
 
-export type RootStackParamList = {
+export type RootStack = {
   Splash: undefined;
   SignUp: undefined;
   Contact: undefined;
@@ -27,28 +29,31 @@ export type RootStackParamList = {
   Profile: undefined;
   Settings: undefined;
   NewChat: undefined;
+  Status: undefined;
+  Calls: undefined;
   SingleChat: {
     chatId: number;
-    chatName: string;
-    lastTime: string;
+    friendName: string;
+    lastSeenTime: string;
     profileImage: string;
   };
 };
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStack>();
 
 export default function App() {
 
     const auth = useContext(AuthContext);
 
+    const USER_ID = 7;
 
   return (
-    <WebSocketProvider userId={auth ? Number(auth.userId) : 0}>
+    <WebSocketProvider userId={USER_ID}>
 
       <ThemeProvider>
         <UserRegistrationProvider>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName='SingleChat' screenOptions={{ animation: 'fade' }}>
+            <Stack.Navigator initialRouteName='Home' screenOptions={{ animation: 'simple_push' }}>
               <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
               <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
               <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
@@ -59,6 +64,8 @@ export default function App() {
               <Stack.Screen name="SingleChat" component={SingleChatScreen} options={{ headerShown: false }} />
               <Stack.Screen name="NewChat" component={NewChatScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Avatar" component={AvatarScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Status" component={StatusScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Calls" component={CallsScreen} options={{ headerShown: false }} />
             </Stack.Navigator>
           </NavigationContainer>
         </UserRegistrationProvider>

@@ -1,14 +1,16 @@
 import { FlatList, Image, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native";
 import "../../global.css";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
+import { RootStack} from "../../App";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "../theme/ThemeProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SetStateAction, useLayoutEffect, useState } from "react";
 import { Entypo, Ionicons } from "@expo/vector-icons";
+import { useChatList } from "../socket/UseChatList";
+import { formatChatTime } from "../util/DateFormatter";
 
-type HomeProps = NativeStackNavigationProp<RootStackParamList, 'Home'>;
+type HomeProps = NativeStackNavigationProp<RootStack, 'Home'>;
 
 const chats = [
     {
@@ -83,6 +85,8 @@ export default function HomeScreen() {
 
     const [searchText, setSearchText] = useState("");
 
+    const chatList = useChatList();
+
     const { applied } = useTheme();
     const logo =
         applied === 'dark'
@@ -118,11 +122,13 @@ export default function HomeScreen() {
                 </View>
             )
         });
-    }, [navigation]);
+    }, [navigation]); 
 
-    const filteredChats = chats.filter((chat) => {
+    const filteredChats = chatList.filter((chat) => {
+        console.log(chat);
+
         return(
-            chat.name.toLowerCase().includes(searchText.toLowerCase()) ||
+            chat.friendName.toLowerCase().includes(searchText.toLowerCase()) ||
             chat.lastMessage.toLowerCase().includes(searchText.toLowerCase())
         )
     });
@@ -130,13 +136,20 @@ export default function HomeScreen() {
     const renderItem = ({ item }: any) => (
         <TouchableOpacity 
             className="flex-row items-center justify-between w-full px-4 py-4 border-b border-gray-200 dark:border-gray-800 active:bg-gray-100 dark:active:bg-gray-900"
-            
+            onPress={()=>{
+                navigation.navigate("SingleChat",{
+                    chatId: item.friendId,
+                    friendName: item.friendName,
+                    lastSeenTime: formatChatTime(item.lastTimeStamp),
+                    profileImage: item.profileImage,
+                })
+            }}
         >
             <View className="flex-row items-center flex-1">
-            <Image source={item.avatar} className="w-14 h-14 rounded-full mr-3" />
+            <Image source={{uri: item.profileImage}} className="w-14 h-14 rounded-full mr-3" />
             <View className="flex-1 mr-2">
                 <Text className="text-base font-semibold text-black dark:text-white mb-1" numberOfLines={1} ellipsizeMode="tail">
-                {item.name}
+                {item.friendName}
                 </Text>
                 <Text className="text-sm text-gray-600 dark:text-gray-400" numberOfLines={1} ellipsizeMode="tail">
                 {item.lastMessage}
@@ -144,10 +157,10 @@ export default function HomeScreen() {
             </View>
             </View>
             <View className="items-end">
-            <Text className="text-xs text-gray-500 mb-1">{item.time}</Text>
-            {item.unread > 0 && (
+            <Text className="text-xs text-gray-500 mb-1">{formatChatTime(item.lastTimeStamp)}</Text>
+            {item.unreadCount > 0 && (
                 <View className="bg-black dark:bg-white rounded-full w-6 h-6 justify-center items-center">
-                <Text className="text-white dark:text-black text-xs font-bold">{item.unread}</Text>
+                <Text className="text-white dark:text-black text-xs font-bold">{item.unreadCount}</Text>
                 </View>
             )}
             </View>

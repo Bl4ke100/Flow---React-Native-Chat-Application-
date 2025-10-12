@@ -9,11 +9,11 @@ import { ALERT_TYPE, AlertNotificationRoot, Dialog } from "react-native-alert-no
 import { validateProfileImage } from "../util/Validation";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
+import { RootStack} from "../../App";
 import { AuthContext } from "../components/AuthProvider";
 import { createNewAccount } from "../api/UserService";
 
-type AvatarProps = NativeStackNavigationProp<RootStackParamList, "Avatar">;
+type AvatarProps = NativeStackNavigationProp<RootStack, "Avatar">;
 
 export default function AvatarScreen() {
 

@@ -27,8 +27,8 @@ export const WebSocketProvider: React.FC<{
       return;
     }
     const socket = new WebSocket(
-      `wss://${process.env.EXPO_PUBLIC_WS_URL}/ChatApp/chat?userId=${userId}`
-    ); //wss => https
+      `wss://${process.env.EXPO_PUBLIC_WS_URL}/Flow/chat?userId=${userId}`
+    );
 
     socketRef.current = socket;
 

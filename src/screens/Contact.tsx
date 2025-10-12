@@ -6,13 +6,13 @@ import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
 import { CountryItem, CountryPicker } from "react-native-country-codes-picker";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
+import { RootStack} from "../../App";
 import { useNavigation } from "@react-navigation/native";
 import { useUserRegistration } from "../components/UserContext";
 import { ALERT_TYPE, AlertNotificationRoot, Dialog } from "react-native-alert-notification";
 import { validateCountryCode, validatePhoneNumber } from "../util/Validation";
 
-type ContactProps = NativeStackNavigationProp<RootStackParamList, "Contact">;
+type ContactProps = NativeStackNavigationProp<RootStack, "Contact">;
 
 export default function ContactScreen() {
 

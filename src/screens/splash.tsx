@@ -4,11 +4,11 @@ import "../../global.css";
 import { useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
+import { RootStack} from "../../App";
 import { Video } from "expo-av";
 import { useTheme } from "../theme/ThemeProvider";
 
-type Props = NativeStackNavigationProp<RootStackParamList, 'Splash'>;
+type Props = NativeStackNavigationProp<RootStack, 'Splash'>;
 
 export default function SplashScreen() {
 

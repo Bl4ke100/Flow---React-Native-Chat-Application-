@@ -4,13 +4,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ALERT_TYPE, AlertNotificationRoot, Dialog } from "react-native-alert-notification";
 import { useTheme } from "../theme/ThemeProvider";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
+import { RootStack} from "../../App";
 import { useNavigation } from "@react-navigation/native";
 import { useUserRegistration } from "../components/UserContext";
 import { validateFirstName, validateLastName } from "../util/Validation";
 import { useState } from "react";
 
-type SignUpProps = NativeStackNavigationProp<RootStackParamList, 'SignUp'>;
+type SignUpProps = NativeStackNavigationProp<RootStack, 'SignUp'>;
 
 
 export default function SignUpScreen() {

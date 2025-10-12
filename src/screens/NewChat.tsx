@@ -1,7 +1,7 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useLayoutEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { RootStackParamList } from "../../App";
+import { RootStack} from "../../App";
 import { useNavigation } from "@react-navigation/native";
 import {
   FlatList,
@@ -16,7 +16,7 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { User } from "../socket/chat";
 import { useUserList } from "../socket/UseUserList";
 
-type NewChatScreenProp = NativeStackNavigationProp<RootStackParamList, "NewChat">;
+type NewChatScreenProp = NativeStackNavigationProp<RootStack, "NewChat">;
 export default function NewChatScreen() {
   const navigation = useNavigation<NewChatScreenProp>();
   const [search, setSearch] = useState("");
