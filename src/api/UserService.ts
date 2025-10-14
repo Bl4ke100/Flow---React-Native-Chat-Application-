@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { UserRegistrationData } from "../components/UserContext";
 
 
-const API = "https://0588ed3a337e.ngrok-free.app/Flow";
+const API = "https://ff779768551c.ngrok-free.app/Flow";
 
 export const createNewAccount = async (
   userRegistrationData: UserRegistrationData
@@ -45,7 +45,7 @@ export const uploadProfileImage = async (userId:string, imageUri: string) => {
   formData.append("userId", userId);
   formData.append("profileImage", {
     uri: imageUri,
-    type: "image/png", // change if PNG
+    type: "image/png", 
     name: "profile.png",
   } as any);
 

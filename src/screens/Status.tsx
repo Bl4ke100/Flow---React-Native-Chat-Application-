@@ -1,19 +1,16 @@
-// src/screens/StatusScreen.tsx
 
 import { FlatList, Image, StatusBar, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import "../../global.css";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStack} from "../../App"; // Assuming your type is in App.tsx
+import { RootStack} from "../../App"; 
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "../theme/ThemeProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLayoutEffect } from "react";
 import { Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
-// Define navigation props for this screen
-type StatusProps = NativeStackNavigationProp<RootStack, 'Status'>; // You might want to add a 'Status' route to your RootStack
+type StatusProps = NativeStackNavigationProp<RootStack, 'Status'>; 
 
-// Mock data for statuses, similar to your chats data
 const statuses = [
     {
         id: '1',
@@ -52,15 +49,13 @@ export default function StatusScreen() {
         ? require("../../assets/logo/Flow_Logo_White.png")
         : require("../../assets/logo/Flow_Logo_Black.png");
 
-    // Filter statuses into recent and viewed
     const recentUpdates = statuses.filter(status => !status.viewed);
     const viewedUpdates = statuses.filter(status => status.viewed);
 
-    // Set header options dynamically based on theme
     useLayoutEffect(() => {
         navigation.setOptions({
             headerShown: true,
-            title: 'Status', // Changed title
+            title: 'Status',
             headerTitleAlign: 'left',
             headerStyle: {
                 backgroundColor: applied === 'dark' ? '#000000' : '#FFFFFF',
@@ -85,7 +80,6 @@ export default function StatusScreen() {
         });
     }, [navigation, applied, logo]);
 
-    // Reusable component for rendering a status item
     const renderStatusItem = ({ item }: { item: typeof statuses[0] }) => (
         <TouchableOpacity className="flex-row items-center w-full px-4 py-3">
             <View className={`p-1 rounded-full ${item.viewed ? 'border-gray-500' : 'border-green-500'} border-2`}>
@@ -112,7 +106,6 @@ export default function StatusScreen() {
         <SafeAreaView className="flex-1 bg-white dark:bg-black">
             <StatusBar hidden={true} />
             <ScrollView className="flex-1">
-                {/* My Status Section */}
                 <View className="px-4 pt-4 pb-2">
                     <TouchableOpacity className="flex-row items-center w-full">
                         <View className="relative">
@@ -129,7 +122,6 @@ export default function StatusScreen() {
                     </TouchableOpacity>
                 </View>
 
-                {/* Recent Updates Section */}
                 {recentUpdates.length > 0 && (
                     <>
                         <SectionHeader title="RECENT UPDATES" />
@@ -137,12 +129,11 @@ export default function StatusScreen() {
                             data={recentUpdates}
                             renderItem={renderStatusItem}
                             keyExtractor={item => item.id}
-                            scrollEnabled={false} // Disable scrolling as it's inside a ScrollView
+                            scrollEnabled={false} 
                         />
                     </>
                 )}
 
-                {/* Viewed Updates Section */}
                 {viewedUpdates.length > 0 && (
                     <>
                         <SectionHeader title="VIEWED UPDATES" />
@@ -156,7 +147,6 @@ export default function StatusScreen() {
                 )}
             </ScrollView>
 
-            {/* Floating Action Buttons */}
             <View className="absolute bottom-5 right-5 items-center gap-y-4">
                  <TouchableOpacity className="w-12 h-12 bg-gray-200 dark:bg-gray-800 rounded-2xl justify-center items-center shadow-lg">
                     <MaterialCommunityIcons name="pencil" size={24} color={applied === 'dark' ? '#FFFFFF' : '#000000'} />

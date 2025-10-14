@@ -10,7 +10,7 @@ type AuthContextType = {
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
-export const USER_ID_KEY = "userId"; // saved name on AsynchStorage
+export const USER_ID_KEY = "userId"; 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -43,7 +43,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setUserId(null);
   };
 
-  // when calling this hook if dependencies are changed otherwise it get previous data
   const value = useMemo(
     () => ({ userId, isLoading, signUp, signOut }),
     [userId, isLoading]

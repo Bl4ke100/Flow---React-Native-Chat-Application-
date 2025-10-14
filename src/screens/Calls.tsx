@@ -1,4 +1,3 @@
-// src/screens/CallsScreen.tsx
 
 import { FlatList, Image, StatusBar, Text, TouchableOpacity, View } from "react-native";
 import "../../global.css";
@@ -10,18 +9,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useLayoutEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
-// Define navigation props
-type CallsProps = NativeStackNavigationProp<RootStack, 'Calls'>; // Adjust route name if you add 'Calls' to your stack
+type CallsProps = NativeStackNavigationProp<RootStack, 'Calls'>; 
 
-// Mock data for the calls list
 const calls = [
     {
         id: '1',
         name: 'John Doe',
         avatar: require('../../assets/avatars/avatar_1.png'),
         time: 'Today, 10:45 AM',
-        type: 'incoming', // 'incoming', 'outgoing', 'missed'
-        callMethod: 'video' // 'video', 'voice'
+        type: 'incoming', 
+        callMethod: 'video' 
     },
     {
         id: '2',
@@ -104,7 +101,6 @@ export default function CallsScreen() {
         ? require("../../assets/logo/Flow_Logo_White.png")
         : require("../../assets/logo/Flow_Logo_Black.png");
 
-    // Set header options dynamically
     useLayoutEffect(() => {
         navigation.setOptions({
             headerShown: true,
@@ -134,7 +130,7 @@ export default function CallsScreen() {
     const renderCallItem = ({ item }: { item: typeof calls[0] }) => {
         const isMissed = item.type === 'missed';
         const callTypeIcon = item.type === 'incoming' ? 'arrow-down-outline' : 'arrow-up-outline';
-        const callTypeColor = isMissed ? '#ef4444' : '#8e8e93'; // Red for missed, gray for others
+        const callTypeColor = isMissed ? '#ef4444' : '#8e8e93'; 
 
         return (
             <TouchableOpacity className="flex-row items-center w-full px-4 py-3 active:bg-gray-100 dark:active:bg-gray-900">

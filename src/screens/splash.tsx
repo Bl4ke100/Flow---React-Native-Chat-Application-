@@ -4,13 +4,15 @@ import "../../global.css";
 import { useEffect, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStack} from "../../App";
+import { RootStack } from "../../App";
 import { Video } from "expo-av";
 import { useTheme } from "../theme/ThemeProvider";
+import { useWebSocketPing } from "../socket/UseWebSocketPing";
 
 type Props = NativeStackNavigationProp<RootStack, 'Splash'>;
 
 export default function SplashScreen() {
+    useWebSocketPing(1000 * 60);
 
     const navigation = useNavigation<Props>();
 
@@ -25,7 +27,6 @@ export default function SplashScreen() {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            navigation.replace('SignUp'); 
         }, 4000);
         return () => clearTimeout(timer);
     }, [navigation]);

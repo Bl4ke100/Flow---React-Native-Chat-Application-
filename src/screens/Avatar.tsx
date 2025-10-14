@@ -9,7 +9,7 @@ import { ALERT_TYPE, AlertNotificationRoot, Dialog } from "react-native-alert-no
 import { validateProfileImage } from "../util/Validation";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStack} from "../../App";
+import { RootStack } from "../../App";
 import { AuthContext } from "../components/AuthProvider";
 import { createNewAccount } from "../api/UserService";
 
@@ -52,6 +52,8 @@ export default function AvatarScreen() {
         require("../../assets/avatars/avatar_9.png"),
     ];
 
+    const auth = useContext(AuthContext);
+
     const { userData, setUserData } = useUserRegistration();
 
     const handleAvatarSelection = (item: any) => {
@@ -64,9 +66,6 @@ export default function AvatarScreen() {
     };
 
     const [loading, setLoading] = useState(false);
-    const auth = useContext(AuthContext);
-
-
 
     return (
         <SafeAreaView className="flex-1 bg-white dark:bg-black">
@@ -147,15 +146,20 @@ export default function AvatarScreen() {
                                         const response = await createNewAccount(userData);
                                         console.log(response);
                                         if (response.status) {
+                                            const id = response.userId;
+
                                             Dialog.show({
                                                 type: ALERT_TYPE.SUCCESS,
                                                 title: 'Success',
                                                 textBody: 'Account created successfully!',
                                                 button: 'Continue',
-                                                onPressButton() {
-                                                    navigation.navigate('Home');
+                                                onPressButton: async () => {
+                                                    if (auth) {
+                                                        await auth.signUp(String(id));
+                                                    }
                                                 },
                                             });
+
                                         } else {
                                             Dialog.show({
                                                 type: ALERT_TYPE.DANGER,

@@ -1,14 +1,15 @@
-import { FlatList, Image, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Modal, Pressable, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native";
 import "../../global.css";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStack} from "../../App";
+import { RootStack } from "../../App";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "../theme/ThemeProvider";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { SetStateAction, useLayoutEffect, useState } from "react";
+import { SetStateAction, useContext, useLayoutEffect, useState } from "react";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { useChatList } from "../socket/UseChatList";
 import { formatChatTime } from "../util/DateFormatter";
+import { AuthContext } from "../components/AuthProvider";
 
 type HomeProps = NativeStackNavigationProp<RootStack, 'Home'>;
 
@@ -86,6 +87,10 @@ export default function HomeScreen() {
     const [searchText, setSearchText] = useState("");
 
     const chatList = useChatList();
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const auth = useContext(AuthContext);
+
 
     const { applied } = useTheme();
     const logo =
@@ -99,7 +104,7 @@ export default function HomeScreen() {
             title: 'Flow',
             headerTitleAlign: 'left',
             headerStyle: {
-                backgroundColor: applied === 'dark' ? '#000000' : '#FFFFFF',
+                backgroundColor: applied === 'dark' ? 'black' : 'white',
             },
             headerTitleStyle: {
                 color: applied === 'dark' ? '#FFFFFF' : '#000000',
@@ -116,28 +121,76 @@ export default function HomeScreen() {
                     <TouchableOpacity>
                         <Entypo name="camera" size={24} color={applied === 'dark' ? '#FFFFFF' : '#000000'} />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => setIsModalVisible(true)}>
                         <Ionicons name="ellipsis-vertical" size={24} color={applied === 'dark' ? '#FFFFFF' : '#000000'} style={{ marginLeft: 8 }} />
                     </TouchableOpacity>
+                    <Modal
+                        animationType="fade"
+                        visible={isModalVisible}
+                        transparent={true}
+                        onRequestClose={() => setIsModalVisible(false)}
+                        className="absolute top-0 right-0"
+                    >
+                        <Pressable
+                        className="flex-1 bg-transparent"
+                            onPress={() => {
+                                setIsModalVisible(false);
+                            }}
+                        >
+                            <View className={`absolute top-16 right-4 w-48 bg-white dark:bg-black rounded-lg shadow-lg p-2 ${applied === 'dark' ? 'border border-gray-700' : 'border border-gray-300'}`}>
+                                <Pressable className="px-4 py-3 hover:bg-black dark:hover:bg-white rounded-lg"
+                                    onPress={(e) => {
+                                        e.stopPropagation();
+                                        setIsModalVisible(false);
+                                        navigation.navigate("Settings");
+                                    }}
+                                >
+                                    <Text className={`text-base ${applied === 'dark' ? 'text-white' : 'text-black'}`}>Settings</Text>
+                                </Pressable>
+                                <Pressable className="px-4 py-3 hover:bg-black dark:hover:bg-white rounded-lg"
+                                    onPress={(e) => {
+                                        e.stopPropagation();
+                                        setIsModalVisible(false);
+                                        navigation.navigate("Profile");
+                                    }}
+                                >
+                                    <Text className={`text-base ${applied === 'dark' ? 'text-white' : 'text-black'}`}>My Profile</Text>
+                                </Pressable>
+                                <Pressable className="px-4 py-3 hover:bg-black dark:hover:bg-white rounded-lg"
+                                    onPress={(e) => {
+                                        e.stopPropagation();
+                                        setIsModalVisible(false);
+                                        navigation.navigate("Profile");
+                                        if (auth) auth.signOut();
+                                        navigation.replace("Splash");
+                                    }}
+                                >
+                                    <Text className={`text-base ${applied === 'dark' ? 'text-white' : 'text-black'}`}>Logout</Text>
+                                </Pressable>
+                                
+                            </View>
+                        </Pressable>
+                    </Modal>
                 </View>
             )
         });
-    }, [navigation]); 
 
-    const filteredChats = chatList.filter((chat) => {
+    }, [navigation, isModalVisible]);
+
+    const filteredChats = [...chatList].filter((chat) => {
         console.log(chat);
 
-        return(
+        return (
             chat.friendName.toLowerCase().includes(searchText.toLowerCase()) ||
             chat.lastMessage.toLowerCase().includes(searchText.toLowerCase())
         )
-    });
+    }).sort((a, b) => { return new Date(b.lastTimeStamp).getTime() - new Date(a.lastTimeStamp).getTime() });
 
     const renderItem = ({ item }: any) => (
-        <TouchableOpacity 
+        <TouchableOpacity
             className="flex-row items-center justify-between w-full px-4 py-4 border-b border-gray-200 dark:border-gray-800 active:bg-gray-100 dark:active:bg-gray-900"
-            onPress={()=>{
-                navigation.navigate("SingleChat",{
+            onPress={() => {
+                navigation.navigate("SingleChat", {
                     chatId: item.friendId,
                     friendName: item.friendName,
                     lastSeenTime: formatChatTime(item.lastTimeStamp),
@@ -146,23 +199,31 @@ export default function HomeScreen() {
             }}
         >
             <View className="flex-row items-center flex-1">
-            <Image source={{uri: item.profileImage}} className="w-14 h-14 rounded-full mr-3" />
-            <View className="flex-1 mr-2">
-                <Text className="text-base font-semibold text-black dark:text-white mb-1" numberOfLines={1} ellipsizeMode="tail">
-                {item.friendName}
-                </Text>
-                <Text className="text-sm text-gray-600 dark:text-gray-400" numberOfLines={1} ellipsizeMode="tail">
-                {item.lastMessage}
-                </Text>
-            </View>
+                {item.profileImage ? (
+                    <Image source={{ uri: item.profileImage }} className="w-14 h-14 rounded-full mr-3" />
+                ) : (
+                    <View className="w-14 h-14 rounded-full mr-3 bg-gray-200 dark:bg-gray-800 justify-center items-center">
+                        <Text className="text-3xl text-gray-500 dark:text-gray-400 text-center font-bold">
+                            {item.friendName.charAt(0).toUpperCase()}
+                        </Text>
+                    </View>
+                )}
+                <View className="flex-1 mr-2">
+                    <Text className="text-base font-semibold text-black dark:text-white mb-1" numberOfLines={1} ellipsizeMode="tail">
+                        {item.friendName}
+                    </Text>
+                    <Text className="text-sm text-gray-600 dark:text-gray-400" numberOfLines={1} ellipsizeMode="tail">
+                        {item.lastMessage}
+                    </Text>
+                </View>
             </View>
             <View className="items-end">
-            <Text className="text-xs text-gray-500 mb-1">{formatChatTime(item.lastTimeStamp)}</Text>
-            {item.unreadCount > 0 && (
-                <View className="bg-black dark:bg-white rounded-full w-6 h-6 justify-center items-center">
-                <Text className="text-white dark:text-black text-xs font-bold">{item.unreadCount}</Text>
-                </View>
-            )}
+                <Text className="text-xs text-gray-500 mb-1">{formatChatTime(item.lastTimeStamp)}</Text>
+                {item.unreadCount > 0 && (
+                    <View className="bg-black dark:bg-white rounded-full w-6 h-6 justify-center items-center">
+                        <Text className="text-white dark:text-black text-xs font-bold">{item.unreadCount}</Text>
+                    </View>
+                )}
             </View>
         </TouchableOpacity>
     );
@@ -171,8 +232,8 @@ export default function HomeScreen() {
         <SafeAreaView className="flex-1 justify-center items-center bg-white dark:bg-black">
             <StatusBar hidden={true} />
             <View className="flex-row items-center border-gray-300 rounded-xl border w-11/12 h-12 px-4 bottom-4">
-                <Ionicons name="search" size={24} color={applied === 'dark' ? '#FFFFFF' : '#000000'}/>
-                <TextInput className="flex-1 mx-1 p-2 border-0 text-black dark:text-white text-lg font-bold" placeholder="Search" 
+                <Ionicons name="search" size={24} color={applied === 'dark' ? '#FFFFFF' : '#000000'} />
+                <TextInput className="flex-1 mx-1 p-2 border-0 text-black dark:text-white text-lg font-bold placeholder:text-gray-500" placeholder="Search"
                     value={searchText}
                     onChangeText={(text) => setSearchText(text)}
                 />
@@ -180,9 +241,9 @@ export default function HomeScreen() {
             <View className="flex-1 justify-center items-center">
                 <FlatList data={filteredChats} renderItem={renderItem} />
             </View>
-            <View className="absolute bottom-5 right-5 w-16 h-16 bg-black dark:bg-white rounded-full justify-center items-center">
+            <TouchableOpacity className="absolute bottom-5 right-5 w-16 h-16 bg-black dark:bg-white rounded-full justify-center items-center" onPress={() => navigation.navigate("NewChat")}>
                 <Ionicons name="chatbox-ellipses" size={30} color={applied === 'dark' ? 'black' : 'white'} />
-            </View>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 }
